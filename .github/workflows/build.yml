@@ -1,0 +1,60 @@
+name: Veracode Build Artifact
+
+run-name: Veracode Build Artifact
+
+on:
+  repository_dispatch:
+    types: [veracode-build]
+
+jobs:
+  register:
+    uses: ./.github/workflows/veracode-check-run.yml
+    with:
+      check_run_name: ${{ github.workflow }}
+      head_sha: ${{ github.event.client_payload.sha }}
+      repositroy_owner: ${{ github.event.client_payload.repository.owner }}
+      repositroy_name: ${{ github.event.client_payload.repository.name }}
+      event_type: ${{ github.event.client_payload.event_type }}
+      github_token: ${{ github.event.client_payload.token }}
+      run_id: ${{ github.run_id }}
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ github.event.client_payload.repository.full_name }}
+        ref: ${{ github.event.client_payload.sha }}
+        token: ${{ github.event.client_payload.token }}
+        event_name: ${{ github.event.action }}
+    - uses: actions/checkout@v3
+      with:
+        path: 'veracode-helper'
+    - uses: actions/setup-java@v3
+      with:
+        java-version: 17
+        distribution: oracle
+    - name: Cache Maven Dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+    - name: Package the appliccation
+      env:
+        VERACODE_API_KEY_ID: '${{ secrets.VERACODE_API_ID }}'
+        VERACODE_API_KEY_SECRET: '${{ secrets.VERACODE_API_KEY }}'
+      run: |
+        cd veracode-helper/helper/cli
+        cliFile=$(ls -1 . | head -n 1)
+        cliFileName=$(echo "$cliFile" | cut -c 1-$((${#cliFile}-7)))
+        tar -zxvf $cliFile
+        cd $cliFileName
+        chmod +x install.sh
+        ./install.sh system
+        cd /home/runner/work/veracode/veracode/
+        veracode package --source . --output veracode-artifacts --trust
+        zip veracode-artifact.zip veracode-artifacts/* -x .zip .tar .tar.gz .gz
+    - uses: actions/upload-artifact@v3
+      with:
+        name: veracode-artifact
+        path: veracode-artifact.zip
