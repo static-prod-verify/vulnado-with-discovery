@@ -38,6 +38,7 @@ on:
         description: 'branch triggered by the GitHub App (provided by GitHub app via `github.event.client_payload.repository.branch`)'
         required: true
         type: string
+
 jobs:
   create_check_run:
     runs-on: ubuntu-latest
@@ -58,7 +59,6 @@ jobs:
           INPUT_HEAD_SHA: ${{ inputs.head_sha }}
           INPUT_DETAILS_URL: "https://github.com/${{ github.repository }}/actions/runs/${{ inputs.run_id }}"
   
-          
       - name: Create metadata
         id: create-metadata-json
         run: |
@@ -72,7 +72,7 @@ jobs:
           echo "run_id=${{ fromJson(steps.create_check_run.outputs.data).id }}" >> "GITHUB_OUTPUT"
         shell: bash
       - name: Save metadata
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: workflow-metadata
           path: workflow-metadata.json
