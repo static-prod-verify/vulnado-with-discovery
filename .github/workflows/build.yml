@@ -4,7 +4,7 @@ run-name: Veracode Build Artifact
 
 on:
   repository_dispatch:
-    types: [veracode-build]
+    types: [vulnado-build]
 
 jobs:
   register:
