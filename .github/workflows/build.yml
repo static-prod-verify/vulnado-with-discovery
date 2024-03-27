@@ -1,6 +1,6 @@
 name: Veracode Build Artifact
 
-run-name: Veracode Build Artifact - {{ github.event.client_payload.event_type }} - {{ github.event.client_payload.repository.branch }}
+run-name: Veracode Build Artifact - ${{ github.event.client_payload.event_type }} - ${{ github.event.client_payload.repository.branch }}
 
 on:
   repository_dispatch:
