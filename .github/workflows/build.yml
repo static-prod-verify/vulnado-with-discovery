@@ -4,7 +4,7 @@ run-name: Vulnado Build Artifact - ${{ github.event.client_payload.event_type }}
 
 on:
   repository_dispatch:
-    types: [veracode-build]
+    types: [vulnado-build]
 
 jobs:
   build:
