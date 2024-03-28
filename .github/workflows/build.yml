@@ -3,7 +3,8 @@ name: Veracode Build Artifact
 run-name: Vulnado Build Artifact - ${{ github.event.client_payload.event_type }} - ${{ github.event.client_payload.repository.branch }}
 
 on:
-  push:
+  repository_dispatch:
+    types: [veracode-build]
 
 jobs:
   build:
@@ -31,6 +32,7 @@ jobs:
         VERACODE_API_KEY_ID: '${{ secrets.VERACODE_API_ID }}'
         VERACODE_API_KEY_SECRET: '${{ secrets.VERACODE_API_KEY }}'
       run: |
+        echo ${{ github.event.client_payload.repository.artifact_name }}
         cd veracode-helper/helper/cli
         cliFile=$(ls -1 . | head -n 1)
         cliFileName=$(echo "$cliFile" | cut -c 1-$((${#cliFile}-7)))
@@ -40,7 +42,7 @@ jobs:
         ./install.sh system
         cd /home/runner/work/vulnado/vulnado/
         veracode package --source . --output vulnado-artifacts --trust
-        zip vulnado-artifact.zip vulnado-artifacts/* -x .zip .tar .tar.gz .gz
+        zip ${{ github.event.client_payload.repository.artifact_name }}.zip vulnado-artifacts/* -x .zip .tar .tar.gz .gz
     - uses: actions/upload-artifact@v4
       with:
         name: vulnado-artifact
