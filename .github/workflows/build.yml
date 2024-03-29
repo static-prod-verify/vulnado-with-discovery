@@ -54,7 +54,7 @@ jobs:
         ./install.sh system
         cd /home/runner/work/vulnado/vulnado/
         veracode package --source . --output vulnado-artifacts --trust
-        zip ${{ github.event.client_payload.repository.artifact_name }}.zip vulnado-artifacts/* -x .zip .tar .tar.gz .gz
+        zip vulnado-build.zip vulnado-artifacts/* -x .zip .tar .tar.gz .gz
     - uses: actions/upload-artifact@v4
       with:
         name: ${{ github.event.client_payload.repository.artifact_name }}
