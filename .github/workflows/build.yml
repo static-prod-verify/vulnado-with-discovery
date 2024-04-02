@@ -8,16 +8,20 @@ on:
 
 jobs:
   register:
-    uses: ./.github/workflows/veracode-check-run.yml
-    with:
-      check_run_name: ${{ github.workflow }}
-      head_sha: ${{ github.event.client_payload.sha }}
-      repositroy_owner: ${{ github.event.client_payload.repository.owner }}
-      repositroy_name: ${{ github.event.client_payload.repository.name }}
-      event_type: ${{ github.event.client_payload.event_type }}
-      github_token: ${{ github.event.client_payload.token }}
-      run_id: ${{ github.run_id }}
-      branch: ${{ github.event.client_payload.repository.branch }}
+    runs-on: ubuntu-latest
+    name: register
+    steps:
+      - name: Verify Veracode API credentials
+        id: verify_api_creds
+        uses: veracode/github-actions-integration-helper@feature/DXS-342
+        with:
+          check_run_name: ${{ github.workflow }}
+          head_sha: ${{ github.event.client_payload.sha }}
+          source_repository: ${{ github.event.client_payload.repository.full_name }}
+          event_type: ${{ github.event.client_payload.event_type }}
+          github_token: ${{ github.event.client_payload.token }}
+          run_id: ${{ github.run_id }}
+          branch: ${{ github.event.client_payload.repository.branch }}
 
   build:
     runs-on: ubuntu-latest
