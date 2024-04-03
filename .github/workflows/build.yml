@@ -60,8 +60,7 @@ jobs:
         ./install.sh system
         cd /home/runner/work/vulnado/vulnado/
         veracode package --source . --output vulnado-artifacts --trust
-        zip vulnado-artifact.zip vulnado-artifacts/* -x .zip .tar .tar.gz .gz
+        zip artifact.zip vulnado-artifacts/* -x .zip .tar .tar.gz .gz
     - uses: actions/upload-artifact@v4
       with:
-        name: vulnado-artifact
-        path: vulnado-artifact.zip
+        path: artifact.zip
