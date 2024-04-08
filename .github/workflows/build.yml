@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Register source build
         id: source_build
-        uses: veracode/github-actions-integration-helper@feature/DXS-342
+        uses: veracode/github-actions-integration-helper@issues/DXS-413
         with:
           action: registerBuild
           token: ${{ github.event.client_payload.token }}
