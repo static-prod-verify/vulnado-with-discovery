@@ -1,3 +1,7 @@
+actions:
+  veracode_static_scan:
+    build:
+      runs_on: "soumik-windows"
 veracode_static_scan:
   # If the analysis_on_platform is set to true,
   # Veracode will save your last scan result, on the default branch, as an application profile with the same name as your scanned repository on the Veracode platform. 
