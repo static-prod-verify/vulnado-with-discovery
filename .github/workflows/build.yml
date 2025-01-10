@@ -40,5 +40,5 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: veracode-artifact
-        path: veracode-artifact.zip
+        name: vulnado-artifact
+        path: vulnado-artifact.zip
